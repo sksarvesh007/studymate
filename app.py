@@ -21,7 +21,6 @@ app = Flask(__name__)
 app.secret_key = "supersecretkey"
 DATABASE = 'users.db'
 
-# Folder to store uploaded PDFs
 UPLOAD_FOLDER = 'knowledgebase'
 import shutil
 if os.path.exists(UPLOAD_FOLDER):
@@ -35,11 +34,9 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 ALLOWED_EXTENSIONS = {'pdf'}
 
-# Check if the file is a valid PDF
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# Initialize the database
 def init_db():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -53,7 +50,6 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Add this decorator definition before your routes
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -63,12 +59,10 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
-# Home page
 @app.route("/")
 def home():
     return render_template("home.html")
 
-# Login page
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -166,22 +160,15 @@ def chatbot():
                 
                 def generate_response():
                     try:
-                        # Load full conversation history for context
                         history = load_conversation_history()
-                        
-                        # Prepare messages for Groq, including conversation history
                         messages = [
                             {"role": "system", "content": "You are a helpful assistant."}
                         ]
-                        
-                        # Add recent conversation history (last 10 messages)
                         for msg in history[-10:]:
                             messages.append({
                                 "role": msg["role"],
                                 "content": msg["content"]
                             })
-                        
-                        # Get streaming response from Groq
                         completion = client.chat.completions.create(
                             model="llama3-8b-8192",
                             messages=messages,
@@ -318,7 +305,6 @@ def get_questions():
     except FileNotFoundError:
         return jsonify([])
 
-# Add these routes to handle PDF upload and chat
 @app.route('/upload_chat_pdf', methods=['POST'])
 def upload_chat_pdf():
     if 'pdf_file' not in request.files:

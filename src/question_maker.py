@@ -25,13 +25,10 @@ class QuestionMaker:
 
     def generate_questions(self, extracted_text):
         try:
-            # Prepare the complete prompt
             prompt = f"""Context: {extracted_text}
 
             Based on the above context, generate questions following the format specified.
             Return only the JSON array without any additional text."""
-
-            # Make the API call to Groq
             completion = self.client.chat.completions.create(
                 messages=[
                     {"role": "system", "content": self.system_prompt},
@@ -42,13 +39,8 @@ class QuestionMaker:
                 max_tokens=2000
             )
 
-            # Extract the response
             response_text = completion.choices[0].message.content
-
-            # Parse the JSON response
             questions = json.loads(response_text)
-
-            # Save questions to a JSON file
             self._save_questions(questions)
 
             return questions
@@ -58,10 +50,7 @@ class QuestionMaker:
             return None
 
     def _save_questions(self, questions):
-        # Create questions directory if it doesn't exist
         os.makedirs('questions', exist_ok=True)
-        
-        # Save to JSON file
         output_file = 'questions/generated_questions.json'
         with open(output_file, 'w') as f:
             json.dump(questions, f, indent=4)
