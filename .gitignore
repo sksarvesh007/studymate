@@ -1,0 +1,6 @@
+users.db
+vector_store
+chat_logs
+knowledgebase
+questions
+.env

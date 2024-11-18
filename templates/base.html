@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot Application</title>
+</head>
+<body>
+    {% if session.username %}
+    <nav>
+        <ul>
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            <li><a href="{{ url_for('chatbot') }}">Chatbot</a></li>
+            <li><a href="{{ url_for('questions') }}">Questions</a></li>
+            <li><a href="{{ url_for('logout') }}">Logout ({{ session.username }})</a></li>
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% block content %}{% endblock %}
+    
+    <style>
+    nav {
+        background-color: #333;
+        padding: 1em;
+    }
+    
+    nav ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+    }
+    
+    nav a {
+        color: white;
+        text-decoration: none;
+    }
+    
+    nav a:hover {
+        color: #ddd;
+    }
+    </style>
+</body>
+</html>
